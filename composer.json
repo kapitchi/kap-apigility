@@ -1,0 +1,20 @@
+{
+    "name": "kapitchi/kap-apigility",
+    "description": "ZF2 Apigility module providine base/helper classes",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "zf2",
+        "apigility"
+    ],
+    "require": {
+        "zfcampus/zf-rest": "~1.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-0": {
+            "KapApigility": "src/",
+        }
+    }
+}
