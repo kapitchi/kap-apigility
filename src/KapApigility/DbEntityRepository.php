@@ -12,6 +12,7 @@ namespace KapApigility;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Literal;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Adapter\DbTableGateway;
 
@@ -83,24 +84,42 @@ class DbEntityRepository implements EntityRepositoryInterface
      */
     public function getPaginatorAdapter(array $criteria, array $orderBy = null)
     {
-        return new DbTableGateway($this->table, $this->createCriteriaWhere($criteria), $orderBy);
+
+        $sql    = $this->getTable()->getSql();
+        $select = $sql->select();
+        
+        $this->configurePaginatorSelect($select, $criteria, (array)$orderBy);
+        
+        $resultSetPrototype = $this->getTable()->getResultSetPrototype();
+        return new \Zend\Paginator\Adapter\DbSelect($select, $sql, $resultSetPrototype);
     }
     
-    protected function createCriteriaWhere(array $criteria)
+    protected function configurePaginatorSelect(Select $select, array $criteria, array $orderBy)
     {
-        $data = (array)$criteria;
-        //needed for integer values
-        array_walk($data, function(&$item, $key) {
-            if(is_int($item)) {
-                $item = new Literal($item);
-            }
-        });
-        
-        $where = new Where();
-        $where->addPredicates($data);
-        
-        return $where;
+        $select->where($criteria);
+        $select->order($orderBy);
     }
+
+    /**
+     * @deprecated Use configurePaginatorSelect() instead
+     * @param array $criteria
+     * @return Where
+     */
+//    protected function createCriteriaWhere(array $criteria)
+//    {
+//        $data = (array)$criteria;
+//        //needed for integer values
+//        array_walk($data, function(&$item, $key) {
+//            if(is_int($item)) {
+//                $item = new Literal($item);
+//            }
+//        });
+//        
+//        $where = new Where();
+//        $where->addPredicates($data);
+//        
+//        return $where;
+//    }
     
     /**
      * @param \Zend\Db\TableGateway\TableGateway $table
