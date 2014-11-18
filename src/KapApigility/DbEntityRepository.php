@@ -77,6 +77,15 @@ class DbEntityRepository implements EntityRepositoryInterface
         return $resultSet->current();
     }
     
+    public function fetchAll(array $criteria = null, array $orderBy = null, $limit = 0, $offset = 0)
+    {
+        $adapter = $this->getPaginatorAdapter((array)$criteria, $orderBy);
+        if($limit === 0) {
+            $limit = (int)$adapter->count();
+        }
+        return $adapter->getItems($offset, $limit)->toArray();
+    }
+    
     /**
      * @param array $criteria
      * @param array $orderBy
