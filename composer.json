@@ -7,6 +7,11 @@
         "zf2",
         "apigility"
     ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    }
     "require": {
         "zfcampus/zf-rest": "~1.0"
     },
